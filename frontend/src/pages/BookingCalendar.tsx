@@ -16,6 +16,9 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { TimePicker } from '@mui/x-date-pickers/TimePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import { Calendar, dateFnsLocalizer } from 'react-big-calendar';
+import 'react-big-calendar/lib/css/react-big-calendar.css';
+import { format, parse, startOfWeek, getDay } from 'date-fns';
 
 interface BookingFormData {
   date: Date | null;
@@ -24,6 +27,18 @@ interface BookingFormData {
   room: string;
   purpose: string;
 }
+
+const locales = {
+  'en-US': require('date-fns/locale/en-US'),
+};
+
+const localizer = dateFnsLocalizer({
+  format,
+  parse,
+  startOfWeek,
+  getDay,
+  locales,
+});
 
 const BookingCalendar: React.FC = () => {
   const [openDialog, setOpenDialog] = useState(false);
@@ -35,6 +50,8 @@ const BookingCalendar: React.FC = () => {
     purpose: '',
   });
 
+  const [events, setEvents] = useState<any[]>([]);
+
   const rooms = [
     { id: 'boardroom', name: 'Main Boardroom' },
     { id: 'capsule-a', name: 'Capsule A' },
@@ -45,9 +62,27 @@ const BookingCalendar: React.FC = () => {
 
   const handleSubmit = async () => {
     try {
-      // TODO: Implement booking submission
-      console.log('Booking submitted:', bookingData);
-      setOpenDialog(false);
+      if (bookingData.date && bookingData.startTime && bookingData.endTime) {
+        const newEvent = {
+          title: `${bookingData.room} - ${bookingData.purpose}`,
+          start: new Date(
+            bookingData.date.getFullYear(),
+            bookingData.date.getMonth(),
+            bookingData.date.getDate(),
+            bookingData.startTime.getHours(),
+            bookingData.startTime.getMinutes()
+          ),
+          end: new Date(
+            bookingData.date.getFullYear(),
+            bookingData.date.getMonth(),
+            bookingData.date.getDate(),
+            bookingData.endTime.getHours(),
+            bookingData.endTime.getMinutes()
+          ),
+        };
+        setEvents([...events, newEvent]);
+        setOpenDialog(false);
+      }
     } catch (error) {
       console.error('Error submitting booking:', error);
     }
@@ -68,8 +103,13 @@ const BookingCalendar: React.FC = () => {
         </Box>
 
         <Paper sx={{ p: 2 }}>
-          {/* TODO: Implement calendar view */}
-          <Typography variant="body1">Calendar view coming soon...</Typography>
+          <Calendar
+            localizer={localizer}
+            events={events}
+            startAccessor="start"
+            endAccessor="end"
+            style={{ height: 500 }}
+          />
         </Paper>
 
         <Dialog open={openDialog} onClose={() => setOpenDialog(false)} maxWidth="sm" fullWidth>

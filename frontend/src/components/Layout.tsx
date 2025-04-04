@@ -1,25 +1,25 @@
 import React from 'react';
 import { Outlet, useNavigate } from 'react-router-dom';
 import {
-  AppBar,
-  Box,
-  CssBaseline,
-  Drawer,
-  IconButton,
-  List,
-  ListItem,
-  ListItemIcon,
-  ListItemText,
-  Toolbar,
-  Typography,
-  Button,
-} from '@mui/material';
-import {
   Menu as MenuIcon,
   Dashboard as DashboardIcon,
   Event as EventIcon,
   ExitToApp as LogoutIcon,
 } from '@mui/icons-material';
+import { 
+  AppBar, 
+  Box, 
+  Button, 
+  CssBaseline, 
+  Drawer, 
+  IconButton,
+  List,
+  ListItem, 
+  ListItemIcon, 
+  ListItemText, 
+  Toolbar, 
+  Typography 
+} from '@mui/material';
 import { useAuth } from '../contexts/AuthContext';
 
 const drawerWidth = 240;
